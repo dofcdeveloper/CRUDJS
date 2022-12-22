@@ -46,14 +46,26 @@ function save(key, data){
 
 //Funcion busca ID Asignar 
 function idAsignar(arreglo){
-    let cantidad= arreglo.length+1;
-    let id=cantidad;
-    for(i=0;i<cantidad-1;i++){
-        if (arreglo[i]==null){
-            id=arreglo[i];
-        } 
+    let cantidad= arreglo.length ;
+
+    let idasign=0;
+    let control=true;
+    
+    // console.log(arreglo[cantidad] + " " + cantidad);
+    for (i=0; i<=cantidad; i++){
+        if (idasign ==i){
+            if (arreglo.map(h =>h.id).indexOf(i) == -1){
+                // console.log(arreglo.map(h =>h.id).indexOf(1));
+            }else{
+                idasign++;
+            };
+        }else {
+            return idasign;
+            break;
+        }
     }
-    return id;
+
+    return cantidad;
 }
 
 //READ 
@@ -66,7 +78,6 @@ function readAll(){
     tbody.innerHTML = "";
 
     let hierbas = read("hierbas");
-
 
     hierbas.forEach(element => {
         tbody.innerHTML +=`
@@ -85,7 +96,7 @@ function readAll(){
 
 function readOne(id){
     let hierbas  = read("hierbas");
-    let hierba = hierbas[id -1];
+    let hierba = hierbas[id];
     idGlobal = hierba.id;
     nombreHierba.value = hierba.name;
     precioHierba.value = hierba.pricing;
