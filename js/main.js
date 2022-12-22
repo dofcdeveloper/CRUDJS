@@ -13,30 +13,44 @@ idGlobal=null;
 //CREATE - UPDATE 
 
 function createUpdate(id){
-  
-    let hierbas = read('hierbas');
-    if (id ==null){
-        const hierba= {
-            id: idAsignar(hierbas),
-            name: nombreHierba.value,
-            pricing: precioHierba.value, 
-            format: formatoHierba.value, 
-        }
-        hierbas.push(hierba);
-    }else {
-        let posicion = hierbas.findIndex(hierba => hierba.id == id);
-        console.log(posicion);
-        hierbas[posicion].name = nombreHierba.value;
-        hierbas[posicion].pricing = precioHierba.value;
-        hierbas[posicion].format = formatoHierba.value;
-        idGlobal=null;
-
+let validacion=false;
+    if (nombreHierba.value =="" || precioHierba.value =="" || formatoHierba.value ==""){
+        alert('porfavor completar Nombre de la hierba, precio y formato');
+        validacion=true;
+    } 
+    if (isNaN(parseInt(precioHierba.value))){
+        alert('precio de hierba debe ser numerico');
+        validacion=true;
     }
- 
-    save("hierbas", hierbas);
-    readAll();
-    clearAll();
-    location.reload();
+
+    if (validacion){
+        
+            }else{
+        
+            let hierbas = read('hierbas');
+            if (id ==null){
+                const hierba= {
+                    id: idAsignar(hierbas),
+                    name: nombreHierba.value,
+                    pricing: precioHierba.value, 
+                    format: formatoHierba.value, 
+                }
+                hierbas.push(hierba);
+            }else {
+                let posicion = hierbas.findIndex(hierba => hierba.id == id);
+                console.log(posicion);
+                hierbas[posicion].name = nombreHierba.value;
+                hierbas[posicion].pricing = precioHierba.value;
+                hierbas[posicion].format = formatoHierba.value;
+                idGlobal=null;
+
+            }
+        
+            save("hierbas", hierbas);
+            readAll();
+            clearAll();
+            location.reload();
+        }
 }
 
 //Guardar
