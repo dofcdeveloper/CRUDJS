@@ -23,8 +23,7 @@ let validacion=false;
         validacion=true;
     }
 
-    if (validacion){
-        
+    if (validacion){   
             }else{
         
             let hierbas = read('hierbas');
