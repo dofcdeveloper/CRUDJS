@@ -1,139 +1,131 @@
-//Crear Tabla
-const root = document.querySelector("#resultados");
-const table  =document.createElement("table");
-table.className ="table";
-root.appendChild(table);
-const thead=document.createElement("thead");
-table.appendChild(thead);
-
-//menu principal
-const tr = document.createElement("tr");
-thead.appendChild(tr);
-const th1 =document.createElement("th");
-const th2 =document.createElement("th");
-const th3 =document.createElement("th");
-const th4 =document.createElement("th");
-const th5 =document.createElement("th");
-
-th1.scope="col";
-th2.scope="col";
-th3.scope="col";
-th4.scope="col";
-th5.scope="col";
-
-tr.appendChild(th1);
-tr.appendChild(th2);
-tr.appendChild(th3);
-tr.appendChild(th4);
-tr.appendChild(th5);
+// Este es un CRUD -CREATE READ UDPDATE DELETE
 
 
-th1.innerHTML="name";
-th2.innerHTML="Precio";
-th3.innerHTML="Formato";
-th4.innerHTML="Editar";
-th5.innerHTML="Eliminar";
+//traemos objetos del DOM 
+let idHierba =document.querySelector("#id");
+let nombreHierba =document.querySelector("#nombreHierba");
+let precioHierba =document.querySelector("#precioHierba");
+let formatoHierba=document.querySelector("#formatoHierba");
+let bntCU=document.querySelector("#agregar");
 
-const tbody =document.createElement("tbody");
-table.appendChild(tbody);
+idGlobal=null;
 
-// extrayendo valores de HTML
-const nombreHierba= document.querySelector("#nombreHierba");
-const precioHierba=document.querySelector("#precioHierba");
-const formatoHierba=document.querySelector("#formatoHierba");
-const btn =document.querySelector("#agregar");
+//CREATE - UPDATE 
 
-
-//conectamos con local storage
-const almacenamiento =window.localStorage;
-
-const hierba = 
-    {
-    }
-;
-let contador = 0;
-
-//function agregar y actualizar
-
-function agregaHierba(name,price, formato, obj){
-    //agregamos las variables al objeto
-    obj.nombreHierba = name.value
-    obj.precioHierba = price.value
-    obj.formatoHierba = formato.value
-
-    // creamos el key con el nombre y guardamos en el archivo
-
-        if (name.value === ""){
-            console.log('vacio');
-        }else {
-            window.localStorage.setItem(name.value, JSON.stringify(obj));
-        };
-        mostrartabla();
-}
-
-function mostrartabla(){
-
-    for (x=0; x<=almacenamiento.length-1; x++)
-        {
-            clave = almacenamiento.key(x);
-            if (contador>almacenamiento.length-1){
-                console.log("existe");
-            }else {
-            objetoJson = JSON.parse(window.localStorage.getItem(clave));
-
-            let dinatr = document.createElement("tr");
-            tbody.appendChild(dinatr);
-
-            let dinath1 = document.createElement("th");
-            dinatr.appendChild(dinath1);
-            dinath1.id=x;
-            dinath1.scope="row";
-            dinath1.innerHTML=objetoJson.nombreHierba;
-
-            let dinatd1 = document.createElement("td");
-            dinatr.appendChild(dinatd1);
-            dinatd1.innerHTML=objetoJson.precioHierba;
-
-            let dinatd2 = document.createElement("td");
-            dinatr.appendChild(dinatd2);
-            dinatd2.innerHTML=objetoJson.formatoHierba;
-
-            let dinatd3 = document.createElement("td");
-            dinatr.appendChild(dinatd3);
-            const editar = document.createElement("img");
-            dinatd3.appendChild(editar);
-            editar.src="icons/edit.png";
-            editar.width="25";
-            editar.height="25";
-
-            let dinatd4 = document.createElement("td");
-            dinatr.appendChild(dinatd4);
-            dinatd4.scope="row";
-            const borrar = document.createElement("img");
-            dinatd4.appendChild(borrar);
-            borrar.src="icons/delete.png";
-            borrar.width="25";
-            borrar.height="25";
-                contador ++;
-            }
-            
-
+function createUpdate(id){
+  
+    let hierbas = read('hierbas');
+    if (id ==null){
+        const hierba= {
+            id: idAsignar(hierbas),
+            name: nombreHierba.value,
+            pricing: precioHierba.value, 
+            format: formatoHierba.value, 
         }
+        hierbas.push(hierba);
+    }else {
+        let posicion = hierbas.findIndex(hierba => hierba.id == id);
+        console.log(posicion);
+        hierbas[posicion].name = nombreHierba.value;
+        hierbas[posicion].pricing = precioHierba.value;
+        hierbas[posicion].format = formatoHierba.value;
+        idGlobal=null;
 
-    // storage= window.localStorage;
-
-    // console.log(aaaa.formatoHierba);
-    // console.log(aaaa.nombreHierba);
-    // console.log(aaaa.precioHierba);
-    // console.log(window.localStorage.getItem(1));
-    
-
-
+    }
+ 
+    save("hierbas", hierbas);
+    readAll();
+    clearAll();
+    location.reload();
 }
 
+//Guardar
+function save(key, data){
+    window.localStorage.setItem(key, JSON.stringify(data));
+}
+
+//Funcion busca ID Asignar 
+function idAsignar(arreglo){
+    let cantidad= arreglo.length+1;
+    let id=cantidad;
+    for(i=0;i<cantidad-1;i++){
+        if (arreglo[i]==null){
+            id=arreglo[i];
+        } 
+    }
+    return id;
+}
+
+//READ 
+function read(key){
+    return JSON.parse(window.localStorage.getItem(key)) || [] ;
+}
+
+function readAll(){
+    let tbody = document.querySelector("#hierbitas");
+    tbody.innerHTML = "";
+
+    let hierbas = read("hierbas");
 
 
-//crear Evento de click
+    hierbas.forEach(element => {
+        tbody.innerHTML +=`
+        <tr>
+            <th>${element.id}</th>
+            <td>${element.name}</td>
+            <td>${element.pricing}</td>
+            <td>${element.format}</td>
+            <td><i class="fa-solid fa-pen-to-square" id=edit${element.id}></i></td>
+            <td><i class="fa-solid fa-trash" id=del${element.id}></i></td>
+        </tr>
+        `;
+        
+    });
+}
 
-window.addEventListener('load', event=> mostrartabla());
-btn.addEventListener('click', event => agregaHierba(nombreHierba,precioHierba,formatoHierba,hierba));
+function readOne(id){
+    let hierbas  = read("hierbas");
+    let hierba = hierbas[id -1];
+    idGlobal = hierba.id;
+    nombreHierba.value = hierba.name;
+    precioHierba.value = hierba.pricing;
+    formatoHierba.value = hierba.format;
+}
+
+//eliminar elemento 
+function delHierba(id){
+        let hierbas = read("hierbas");
+        let filtrado = hierbas.filter(hierba => hierba.id != id);
+        console.log(hierbas);
+        console.log(filtrado);
+        save('hierbas', filtrado);
+        readAll();
+       location.reload();
+    
+}
+
+function clearAll(){
+    nombreHierba.value = "";
+    precioHierba.value = "";
+    formatoHierba.value = "";
+}
+
+readAll();
+bntCU.addEventListener('click', event=> createUpdate(idGlobal) );
+
+
+let listaBtnEdit=document.querySelectorAll(".fa-pen-to-square");
+let listaBtnDel=document.querySelectorAll(".fa-trash");
+
+
+listaBtnEdit.forEach(element => {
+    element.addEventListener('click', (event)=> {
+        readOne(element.id.match(/(\d+)/)[0]);
+    });
+});
+
+listaBtnDel.forEach(element => {
+    element.addEventListener('click', (event)=> {
+        delHierba(element.id.match(/(\d+)/)[0]);
+    });
+});
